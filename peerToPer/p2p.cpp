@@ -14,12 +14,12 @@ void serverHandler(SOCKET server_connection)
 	while (true)
 	{
 		recv(server_connection, msg, sizeof(msg), NULL);
-		std::cout << msg << std::endl << ">_ ";
+		std::cout << msg << std::endl;
 	}
 
 }
 
-int server()
+int server(const char my_ip[256])
 {
 	WSAData wsa_data;
 	WORD dll_version = MAKEWORD(2, 1);
@@ -30,7 +30,7 @@ int server()
 	}
 	SOCKADDR_IN addr;
 	int size_of_addr = sizeof(addr);
-	addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	addr.sin_addr.s_addr = inet_addr(my_ip);
 	addr.sin_port = htons(2345);
 	addr.sin_family = AF_INET;
 
@@ -56,7 +56,7 @@ int server()
 	return 0;
 }
 
-int client()
+int client(const char connection_ip[256])
 {
 
 	WSAData wsa_data;
@@ -68,8 +68,7 @@ int client()
 	}
 
 	SOCKADDR_IN addr;
-	int size_of_addr = sizeof(addr);
-	addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	addr.sin_addr.s_addr = inet_addr(connection_ip);
 	addr.sin_port = htons(2345);
 	addr.sin_family = AF_INET;
 
@@ -81,7 +80,7 @@ int client()
 	}
 	std::cout << "Connected (client).\n";
 	char msg[256];
-
+	Sleep(50);
 	while (true)
 	{
 		std::cout << ">_ ";
@@ -97,9 +96,11 @@ int main()
 {
 	system("chcp 1251");
 
+	const char connection_ip[256] = "127.0.0.1";
+	const char my_ip[256] = "127.0.0.1";
 
-	std::thread srv(server);
-	std::thread cln(client);
+	std::thread srv(server, my_ip);
+	std::thread cln(client, connection_ip);
 
 	srv.join();
 	cln.join();

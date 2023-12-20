@@ -30,7 +30,7 @@ int server()
 	}
 	SOCKADDR_IN addr;
 	int size_of_addr = sizeof(addr);
-	addr.sin_addr.s_addr = inet_addr("192.168.0.12");
+	addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	addr.sin_port = htons(2345);
 	addr.sin_family = AF_INET;
 
@@ -69,7 +69,7 @@ int client()
 
 	SOCKADDR_IN addr;
 	int size_of_addr = sizeof(addr);
-	addr.sin_addr.s_addr = inet_addr("192.168.0.12");
+	addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	addr.sin_port = htons(2345);
 	addr.sin_family = AF_INET;
 
@@ -98,8 +98,8 @@ int main()
 	system("chcp 1251");
 
 
-	std::thread cln(client);
 	std::thread srv(server);
+	std::thread cln(client);
 
 	srv.join();
 	cln.join();

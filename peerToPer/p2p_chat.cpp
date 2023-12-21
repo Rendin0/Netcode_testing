@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <Winsock2.h>
+#include <WS2tcpip.h>
 #include <thread>
 
 #pragma comment(lib, "ws2_32.lib")
@@ -40,9 +41,10 @@ int server(const char my_ip[256])
 	}
 	SOCKADDR_IN addr;
 	int size_of_addr = sizeof(addr);
-	addr.sin_addr.s_addr = inet_addr(my_ip);
+	inet_pton(AF_INET, my_ip, &addr.sin_addr);
 	addr.sin_port = htons(2345);
 	addr.sin_family = AF_INET;
+
 
 	SOCKET s_listen = socket(AF_INET, SOCK_STREAM, NULL);
 	bind(s_listen, (SOCKADDR*)&addr, sizeof(addr));

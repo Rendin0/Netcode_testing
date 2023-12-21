@@ -35,8 +35,8 @@ int server(const char my_ip[256])
 	WORD dll_version = MAKEWORD(2, 2);
 	if (WSAStartup(dll_version, &wsa_data) != 0)
 	{
-		std::cout << "Error. Library error.\n";
-		return EXIT_FAILURE;
+		std::cout << "Error. Library didnt load. #" << WSAGetLastError() << std::endl;
+		return 1;
 	}
 	SOCKADDR_IN addr;
 	int size_of_addr = sizeof(addr);
@@ -64,6 +64,7 @@ int server(const char my_ip[256])
 	srv_handler.join();
 
 	closesocket(server_connection);
+	closesocket(s_listen);
 	WSACleanup();
 	return 0;
 }
@@ -75,7 +76,7 @@ int client(const char connection_ip[256])
 	WORD dll_version = MAKEWORD(2, 2);
 	if (WSAStartup(dll_version, &wsa_data) != 0)
 	{
-		std::cout << "Error. Library didnt load.\n";
+		std::cout << "Error. Library didnt load. #" << WSAGetLastError() << std::endl;
 		return 1;
 	}
 
@@ -142,8 +143,6 @@ int main()
 
 	srv.join();
 	cln.join();
-
-
 
 	return 0;
 }

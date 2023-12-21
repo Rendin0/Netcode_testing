@@ -7,14 +7,24 @@
 
 #pragma comment(lib, "ws2_32.lib")
 
+int counter = 20;
+
 void serverHandler(SOCKET server_connection)
 {
-	char msg[256];
+	int msg_size;
 
 	while (true)
 	{
-		recv(server_connection, msg, sizeof(msg), NULL);
-		std::cout << msg << std::endl;
+		recv(server_connection, (char*)&msg_size, sizeof(int), NULL);
+		char* msg = new char[msg_size + 1];
+		msg[msg_size] = '\0';
+
+		recv(server_connection, msg, msg_size, NULL);
+		printf("\u001b[%dA\033[0K", counter);
+		std::cout << "Smn: " << msg << std::endl;
+		counter--;
+		printf("\u001b[%dB", counter - 1);
+		delete[] msg;
 	}
 
 }
@@ -79,14 +89,37 @@ int client(const char connection_ip[256])
 		return 1;
 	}
 	std::cout << "Connected (client).\n";
-	char msg[256];
+	std::string msg;
 	Sleep(50);
+	for (int i = 0; i < counter; i++)
+	{
+		std::cout << std::endl;
+	}
 	while (true)
 	{
 		std::cout << ">_ ";
-		std::cin.getline(msg, sizeof(msg));
-		send(client_connection, msg, sizeof(msg), NULL);
-		Sleep(10);
+		std::getline(std::cin, msg);
+		int msg_size = msg.size();
+		send(client_connection, (char*)&msg_size, sizeof(int), NULL);
+		if (send(client_connection, msg.c_str(), msg_size, NULL) != SOCKET_ERROR)
+		{
+			Sleep(40);
+			if (counter < 10)
+			{
+				std::cout << "\033[0K";
+
+				for (int i = 0; i < 20 - counter; i++)
+				{
+					std::cout << std::endl;
+				}
+				counter = 20;
+			}
+			counter--;
+			printf("\u001b[%dA\033[0K", counter);
+			std::cout << "You: " << msg << std::endl;
+			printf("\u001b[%dB", counter - 1);
+			std::cout << "\033[0K";
+		}
 	}
 
 	return 0;
@@ -95,6 +128,7 @@ int client(const char connection_ip[256])
 int main()
 {
 	system("chcp 1251");
+	system("cls");
 
 	const char connection_ip[256] = "127.0.0.1";
 	const char my_ip[256] = "127.0.0.1";

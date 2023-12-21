@@ -32,7 +32,7 @@ void serverHandler(SOCKET server_connection)
 int server(const char my_ip[256])
 {
 	WSAData wsa_data;
-	WORD dll_version = MAKEWORD(2, 1);
+	WORD dll_version = MAKEWORD(2, 2);
 	if (WSAStartup(dll_version, &wsa_data) != 0)
 	{
 		std::cout << "Error. Library error.\n";
@@ -70,7 +70,7 @@ int client(const char connection_ip[256])
 {
 
 	WSAData wsa_data;
-	WORD dll_version = MAKEWORD(2, 1);
+	WORD dll_version = MAKEWORD(2, 2);
 	if (WSAStartup(dll_version, &wsa_data) != 0)
 	{
 		std::cout << "Error. Library didnt load.\n";

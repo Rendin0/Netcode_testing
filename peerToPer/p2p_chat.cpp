@@ -63,6 +63,8 @@ int server(const char my_ip[256])
 	while (true);
 	srv_handler.join();
 
+	closesocket(server_connection);
+	WSACleanup();
 	return 0;
 }
 
@@ -122,6 +124,8 @@ int client(const char connection_ip[256])
 		}
 	}
 
+	closesocket(client_connection);
+	WSACleanup();
 	return 0;
 }
 
@@ -138,6 +142,8 @@ int main()
 
 	srv.join();
 	cln.join();
+
+
 
 	return 0;
 }

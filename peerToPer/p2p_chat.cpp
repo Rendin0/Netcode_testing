@@ -21,10 +21,11 @@ void serverHandler(SOCKET server_connection)
 		msg[msg_size] = '\0';
 
 		recv(server_connection, msg, msg_size, NULL);
-		printf("\u001b[%dA\033[0K", counter);
+		std::cout << "\u001b[s";
+		printf("\u001b[%dA\033[2K", counter + 1);
 		std::cout << "Smn: " << msg << std::endl;
 		counter--;
-		printf("\u001b[%dB", counter - 1);
+		std::cout << "\u001b[u";
 		delete[] msg;
 	}
 
@@ -61,6 +62,7 @@ int server(const char my_ip[256])
 	}
 	std::thread srv_handler(serverHandler, server_connection);
 	std::cout << "Connected (server).\n";
+	Sleep(2000);
 
 	while (true);
 	srv_handler.join();
@@ -95,7 +97,7 @@ int client(const char connection_ip[256])
 	}
 	std::cout << "Connected (client).\n";
 	std::string msg;
-	Sleep(50);
+	Sleep(2000);
 	for (int i = 0; i < counter; i++)
 	{
 		std::cout << std::endl;
@@ -111,19 +113,21 @@ int client(const char connection_ip[256])
 			Sleep(40);
 			if (counter < 10)
 			{
-				std::cout << "\033[0K";
 
+				std::cout << "\033[2K";
 				for (int i = 0; i < 20 - counter; i++)
 				{
 					std::cout << std::endl;
 				}
 				counter = 20;
 			}
-			counter--;
-			printf("\u001b[%dA\033[0K", counter);
+			// /*
+			printf("\u001b[%dA\033[2K", counter + 1);
 			std::cout << "You: " << msg << std::endl;
-			printf("\u001b[%dB", counter - 1);
-			std::cout << "\033[0K";
+			counter--;
+			printf("\u001b[%dB", counter);
+			std::cout << "\033[2K";
+			// */
 		}
 	}
 

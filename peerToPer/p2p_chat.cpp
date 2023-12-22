@@ -21,8 +21,9 @@ void serverHandler(SOCKET server_connection)
 		msg[msg_size] = '\0';
 
 		recv(server_connection, msg, msg_size, NULL);
-		std::cout << "\u001b[s";
-		printf("\u001b[%dA\033[2K", counter + 1);
+		std::cout << "\u001b[s\u001b[100Z";
+
+		printf("\u001b[%dA\u001b[2K", counter);
 		std::cout << "Smn: " << msg << std::endl;
 		counter--;
 		std::cout << "\u001b[u";
@@ -113,8 +114,7 @@ int client(const char connection_ip[256])
 			Sleep(40);
 			if (counter < 10)
 			{
-
-				std::cout << "\033[2K";
+				std::cout << "\u001b[1A\u001b[2K\u001b[1B";
 				for (int i = 0; i < 20 - counter; i++)
 				{
 					std::cout << std::endl;
@@ -122,11 +122,11 @@ int client(const char connection_ip[256])
 				counter = 20;
 			}
 			// /*
-			printf("\u001b[%dA\033[2K", counter + 1);
+			printf("\u001b[%dA\u001b[2K", counter + 1);
 			std::cout << "You: " << msg << std::endl;
 			counter--;
 			printf("\u001b[%dB", counter);
-			std::cout << "\033[2K";
+			std::cout << "\u001b[2K";
 			// */
 		}
 	}
@@ -141,8 +141,8 @@ int main()
 	system("chcp 1251");
 	system("cls");
 
-	const char connection_ip[256] = "127.0.0.1";
-	const char my_ip[256] = "127.0.0.1";
+	const char connection_ip[256] = "10.5.2.8";
+	const char my_ip[256] = "10.5.2.9";
 
 	std::thread srv(server, my_ip);
 	std::thread cln(client, connection_ip);
